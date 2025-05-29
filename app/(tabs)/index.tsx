@@ -1,56 +1,61 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
+import { useEffect, useState } from 'react';
+import { StyleSheet, TextInput, View, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { IconSymbol } from '@/components/ui/IconSymbol';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
-export default function HomeScreen() {
+export default function TabTwoScreen() {
+  const [favorito, setFavorito] = useState('');
+
+  const salvarFavorito = async (valor: string) => {
+    try {
+      await AsyncStorage.setItem('timeFavorito', valor);
+    } catch (e) {
+      Alert.alert('Erro', 'Não foi possível salvar o time favorito.');
+    }
+  };
+
+  const carregarFavorito = async () => {
+    try {
+      const valor = await AsyncStorage.getItem('timeFavorito');
+      if (valor !== null) {
+        setFavorito(valor);
+      }
+    } catch (e) {
+      Alert.alert('Erro', 'Não foi possível carregar o time favorito.');
+    }
+  };
+
+  useEffect(() => {
+    carregarFavorito();
+  }, []);
+
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
       headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+        <IconSymbol
+          size={310}
+          color="#808080"
+          name="chevron.left.forwardslash.chevron.right"
+          style={styles.headerImage}
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
+        <ThemedText type="title">Explore</ThemedText>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
+      <ThemedText>Digite o nome do seu time favorito abaixo:</ThemedText>
+      <TextInput
+        style={styles.input}
+        placeholder="Ex: Flamengo"
+        value={favorito}
+        onChangeText={(text) => {
+          setFavorito(text);
+          salvarFavorito(text);
+        }}
+      />
     </ParallaxScrollView>
   );
 }
@@ -58,18 +63,20 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    justifyContent: 'center',
+    marginBottom: 20,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  headerImage: {
+    alignSelf: 'center',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    borderRadius: 8,
+    marginVertical: 16,
+    marginHorizontal: 20,
+    fontSize: 16,
+    backgroundColor: '#fff',
   },
 });
