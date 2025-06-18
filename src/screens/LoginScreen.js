@@ -1,6 +1,6 @@
 // src/screens/LoginScreen.js
 
-import AsyncStorage from '@react-native-async-storage/async-storage'; // ⬅️ IMPORTAÇÃO
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
 import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -20,7 +20,7 @@ const LoginScreen = ({ navigation }) => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // ⬇️ SALVA O E-MAIL DO USUÁRIO LOGADO NO ASYNC STORAGE
+      //  SALVA O E-MAIL DO USUÁRIO LOGADO NO ASYNC STORAGE
       await AsyncStorage.setItem('usuarioLogado', user.email);
 
       // NAVEGA PARA A HOME
